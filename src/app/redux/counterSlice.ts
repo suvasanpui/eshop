@@ -58,7 +58,9 @@ export const counterSlice = createSlice({
       }
     },
     removeFromCart:(state,action)=>{
-      state.cart= state.cart.filter((items)=>(items._id || items.id) !== action.payload);
+      state.cart = state.cart.filter(
+        (item) => (item._id || item.id) !== action.payload
+      );
     },
     resetCart:(state)=>{
       state.cart=[];

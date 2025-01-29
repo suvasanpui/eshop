@@ -19,10 +19,10 @@ const CartProduct = ({ product }: Props) => {
   const dispatch = useDispatch();
   
   const handleRemoveProduct = () => {
-    const productId = (product?.id || product?._id)?.toString();
+    const productId = product?._id || product?.id;  // Remove toString() and simplify
     if (productId) {
       dispatch(removeFromCart(productId));
-      toast.success(`${product?.title?.substring(0, 10)}... remove successfully`);
+      toast.success(`${product?.title?.substring(0, 10)}... removed successfully`);
     }
   };
 
