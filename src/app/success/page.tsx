@@ -1,3 +1,4 @@
+"use client"
 import Container from '@/components/Container'
 import { redirect, useSearchParams } from 'next/navigation'
 import React, { useEffect } from 'react'
