@@ -2,11 +2,15 @@ import db from '@/libs/db';
 import product from '@/models/products';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest, context: { params: { id: string } }) {
+// Correct structure for dynamic route handling
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
     try {
+        // Ensure db connection is established
         await db();
-        const { id } = context.params; // Dynamically extract 'id' from params
-
+        
+        // Destructure the 'id' parameter from params
+        const { id } = params;
+        
         // Query the product by ID
         const res = await product.findOne({ _id: id });
 
