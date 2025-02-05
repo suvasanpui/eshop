@@ -31,7 +31,7 @@ export async function GET(
     });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error finding product" },
+      { message: "Error finding product" , error},
       { status: 500 }
     );
   }
