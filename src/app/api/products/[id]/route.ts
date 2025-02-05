@@ -2,21 +2,21 @@ import db from '@/libs/db'
 import product from '@/models/products'
 import { NextRequest, NextResponse } from 'next/server'
 
-type Props = {
-  params: {
-    id: string
-  }
-}
-
 export async function GET(
-  req: NextRequest,
-  context: Props
+  request: NextRequest,
+  { params }: { params: { id: string } }
 ) {
   try {
     await db();
-    const { id } = context.params;
     
-    const res = await product.findOne({ _id: id });
+    if (!params.id) {
+      return NextResponse.json(
+        { message: "Invalid product ID" },
+        { status: 400 }
+      );
+    }
+
+    const res = await product.findOne({ _id: params.id });
     
     if (!res) {
       return NextResponse.json(
@@ -31,7 +31,7 @@ export async function GET(
     });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error finding product" , error},
+      { message: "Error finding product", error },
       { status: 500 }
     );
   }
