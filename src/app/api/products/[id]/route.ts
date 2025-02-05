@@ -2,13 +2,19 @@ import db from '@/libs/db'
 import product from '@/models/products'
 import { NextRequest, NextResponse } from 'next/server'
 
+type Props = {
+  params: {
+    id: string
+  }
+}
+
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }  // Changed type to only allow string
+  req: NextRequest,
+  context: Props
 ) {
   try {
     await db();
-    const { id } = params;
+    const { id } = context.params;
     
     const res = await product.findOne({ _id: id });
     
@@ -25,7 +31,7 @@ export async function GET(
     });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error finding product",error },
+      { message: "Error finding product" },
       { status: 500 }
     );
   }
