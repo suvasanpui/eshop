@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 
 //find a specific topic
-export async function GET(request:NextRequest,{params}:{params:{id:string}}){
+export async function GET(request:NextRequest,{params}:{params:{id:string | number}}){
     const {id}=params;
     await db();
     const res=await product.findOne({_id:id});
