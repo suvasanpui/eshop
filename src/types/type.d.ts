@@ -5,7 +5,7 @@ export interface ProductType {
     description: string;
     category: string;
     price: number;
-    quantity?: number;z
+    quantity?: number;
     discountPercentage?: number;
     rating?: number;
     stock: number;
