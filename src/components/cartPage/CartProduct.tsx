@@ -2,7 +2,6 @@ import { ProductType } from "@/types/type";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { getProductId } from "@/utils/productUtils";
 import ProductPriceFormat from "../ProductPriceFormat";
 import AddToCartButton from "../AddToCartButton";
 import { IoClose } from "react-icons/io5";
@@ -18,8 +17,18 @@ interface Props{
 const CartProduct = ({ product }: Props) => {
   const dispatch = useDispatch();
   
+  // Calculate amount safely
+  const calculateAmount = (price?: number, quantity?: number) => {
+    return (price || 0) * (quantity || 1);
+  };
+
+  // Get product ID safely
+  const safeProductId = () => {
+    return product?._id?.toString() || product?.id?.toString() || '';
+  };
+
   const handleRemoveProduct = () => {
-    const productId = product?._id || product?.id;  // Remove toString() and simplify
+    const productId = safeProductId();  // Use safeProductId function
     if (productId) {
       dispatch(removeFromCart(productId));
       toast.success(`${product?.title?.substring(0, 10)}... removed successfully`);
@@ -30,7 +39,7 @@ const CartProduct = ({ product }: Props) => {
     <div className=" py-6 flex sm:py-10">
       <Link
         href={{
-          pathname: `/products/${getProductId(product)}`,
+          pathname: `/products/${safeProductId()}`,
           query: { id: product?.id },
         }}
         className=" h-24 w-24 sm:h-48 sm:w-48 border border-skyColor/30 hover:border-skyColor overflow-hidden flex items-center justify-center rounded-md"
@@ -59,7 +68,7 @@ const CartProduct = ({ product }: Props) => {
             </p>
             <div className=" flex items-center gap-6 mt-2">
               <ProductPriceFormat
-                amount={product?.price * product?.quantity!}
+                amount={calculateAmount(product?.price, product?.quantity)}
               />
               <AddToCartButton product={product} />
             </div>
@@ -83,7 +92,10 @@ const CartProduct = ({ product }: Props) => {
             </p>
           )}
           <div className="mt-1">
-            You are Saving <ProductPriceFormat className=" text-green-500" amount={product?.price * (product?.discountPercentage /100) * product.quantity!} />
+            You are Saving <ProductPriceFormat className=" text-green-500" amount={calculateAmount(
+              product?.price * (product?.discountPercentage || 0) / 100,
+              product?.quantity
+            )} />
           </div>
         </div>
       </div>
