@@ -2,15 +2,37 @@ import db from '@/libs/db';
 import product from '@/models/products';
 import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest, context: { params: { id: string } }) {
-    const { id } = context.params; // Correct way to access dynamic route params
+interface RouteContext {
+    params: {
+        id: string;
+    };
+}
 
-    await db();
-    const res = await product.findOne({ _id: id });
+export async function GET(
+    request: NextRequest,
+    { params }: RouteContext
+) {
+    try {
+        await db();
+        const { id } = params;
 
-    if (!res) {
-        return NextResponse.json({ message: "Topic not found" }, { status: 404 });
+        const res = await product.findOne({ id: id });
+
+        if (!res) {
+            return NextResponse.json(
+                { message: "Topic not found" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json({
+            message: "Topic fetched successfully",
+            res
+        });
+    } catch (error) {
+        return NextResponse.json(
+            { message: "Error fetching topic",error },
+            { status: 500 }
+        );
     }
-
-    return NextResponse.json({ message: "Topic fetched successfully", res });
 }
