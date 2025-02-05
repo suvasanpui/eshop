@@ -1,15 +1,16 @@
-import db from '@/libs/db'
-import product from '@/models/products'
-import { NextRequest, NextResponse } from 'next/server'
+import db from '@/libs/db';
+import product from '@/models/products';
+import { NextRequest, NextResponse } from 'next/server';
 
+export async function GET(request: NextRequest, context: { params: { id: string } }) {
+    const { id } = context.params; // Correct way to access dynamic route params
 
-//find a specific topic
-export async function GET(request:NextRequest,{params}:{params:{id:string}}){
-    const {id}=params;
     await db();
-    const res=await product.findOne({_id:id});
-    if(!res){
-        return NextResponse.json({message:"topic is not found"});
+    const res = await product.findOne({ _id: id });
+
+    if (!res) {
+        return NextResponse.json({ message: "Topic not found" }, { status: 404 });
     }
-    return NextResponse.json({message:"Topic etch successfully",res});
+
+    return NextResponse.json({ message: "Topic fetched successfully", res });
 }
