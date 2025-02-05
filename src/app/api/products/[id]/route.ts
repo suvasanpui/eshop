@@ -2,21 +2,19 @@ import db from '@/libs/db'
 import product from '@/models/products'
 import { NextRequest, NextResponse } from 'next/server'
 
+interface RequestContext {
+  params: { id: string }
+}
+
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  _req: Request | NextRequest,
+  context: RequestContext
 ) {
   try {
     await db();
+    const { id } = context.params;
     
-    if (!params.id) {
-      return NextResponse.json(
-        { message: "Invalid product ID" },
-        { status: 400 }
-      );
-    }
-
-    const res = await product.findOne({ _id: params.id });
+    const res = await product.findOne({ _id: id });
     
     if (!res) {
       return NextResponse.json(
