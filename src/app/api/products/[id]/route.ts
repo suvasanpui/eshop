@@ -2,14 +2,31 @@ import db from '@/libs/db'
 import product from '@/models/products'
 import { NextRequest, NextResponse } from 'next/server'
 
-
-//find a specific topic
-export async function GET(request:NextRequest,{params}:{params:{id:string | number}}){
-    const {id}=params;
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }  // Changed type to only allow string
+) {
+  try {
     await db();
-    const res=await product.findOne({_id:id});
-    if(!res){
-        return NextResponse.json({message:"topic is not found"});
+    const { id } = params;
+    
+    const res = await product.findOne({ _id: id });
+    
+    if (!res) {
+      return NextResponse.json(
+        { message: "Product not found" },
+        { status: 404 }
+      );
     }
-    return NextResponse.json({message:"Topic etch successfully",res});
+
+    return NextResponse.json({
+      message: "Product fetched successfully",
+      res
+    });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Error finding product",error },
+      { status: 500 }
+    );
+  }
 }
