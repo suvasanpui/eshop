@@ -1,39 +1,29 @@
-import db from '@/libs/db';
-import product from '@/models/products';
-import { NextResponse } from 'next/server';
+import db from "@/libs/db";
+import product from "@/models/products";
+import { NextRequest, NextResponse } from "next/server";
+import type { RouteHandlerContext } from "next/server"; // ✅ Import correct type
 
 export async function GET(
-  _request: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: RouteHandlerContext<{ id: string }> // ✅ Correctly define `context`
 ) {
-  if (!params?.id) {
-    return NextResponse.json(
-      { message: "Invalid product ID" },
-      { status: 400 }
-    );
-  }
-
   try {
     await db();
-    
-    const productDoc = await product.findOne({ 
-      _id: params.id.toString() 
-    });
+    const { id } = context.params; // ✅ Correct way to access params
 
-    if (!productDoc) {
-      return NextResponse.json(
-        { message: "Product not found" },
-        { status: 404 }
-      );
+    const result = await product.findOne({ _id: id });
+
+    if (!result) {
+      return NextResponse.json({ message: "Product not found" }, { status: 404 });
     }
 
     return NextResponse.json({
       message: "Product fetched successfully",
-      data: productDoc
+      data: result,
     });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error fetching product",error },
+      { message: "Error fetching product", error },
       { status: 500 }
     );
   }
