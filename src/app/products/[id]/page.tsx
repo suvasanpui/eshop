@@ -25,7 +25,7 @@ interface Props {
 
 
 const SingleProductPage = async ({ params }: Props) => {
-  const { id } = params;
+  const { id } = params;  // Remove await, params is already available
   const baseUrl = getBaseUrl();
   const endpoint = `${baseUrl}/products/${id}`;
 
